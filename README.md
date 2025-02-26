@@ -1,2 +1,3 @@
 # jum
-A library that creates natural zoom in/out gestures
+
+🖼️ 🔍 A library that enables natural image zoom in/out gestures

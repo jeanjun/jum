@@ -1,4 +1,5 @@
 import type { Commands } from './commands/createCommands'
+import type { Gesture } from './gesture'
 
 export type Point = {
   x: number
@@ -17,7 +18,7 @@ export type Options = {
   camera: Camera
 }
 
-export type JumInstance = Commands & {
+export type JumInstance = Commands & Gesture & {
   version: string
 }
 

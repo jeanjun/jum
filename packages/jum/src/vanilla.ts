@@ -32,11 +32,12 @@ export const createJum = (
      * prototype 으로 들어가게 해놨지만, 일반적인 인스턴스와 달리 실제로 함수를 공유 하지는 않음
      * 단순, 고수준 API와 저수준 API를 구분하기 위한 용도로 사용
      */
-    ...createCommands(shared)
+    ...createCommands(shared),
+    ...createGesture(shared)
   }, {
     version
   })
 
-  createGesture(shared).attach()
+  instance.attach()
   return instance
 }

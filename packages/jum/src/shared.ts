@@ -1,3 +1,5 @@
+import type { Commands } from './commands/createCommands'
+
 export type Point = {
   x: number
   y: number
@@ -15,9 +17,14 @@ export type Options = {
   camera: Camera
 }
 
+export type JumInstance = Commands & {
+  version: string
+}
+
 export type Shared = {
   element: HTMLElement
   options: Options
+  instance: JumInstance
 }
 
 export const createShared = () => ({} as Shared)

@@ -6,7 +6,6 @@
     "build": "git submodule init && git submodule update && tsx scripts/build.ts",
     "dev": "tsx scripts/dev.ts",
     "postinstall": "manypkg fix",
-    "create-package": "plop",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",

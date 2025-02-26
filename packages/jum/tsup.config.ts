@@ -1,4 +1,5 @@
 import { defineConfig } from 'tsup'
+import { version } from './package.json'
 
 export default defineConfig({
   clean: true,
@@ -8,5 +9,8 @@ export default defineConfig({
   sourcemap: true,
   minify: true,
   target: 'esnext',
-  outDir: 'dist'
+  outDir: 'dist',
+  define: {
+    __VERSION__: JSON.stringify(version)
+  }
 })

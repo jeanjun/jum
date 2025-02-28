@@ -2,7 +2,7 @@ import { version } from '.'
 import { assign } from './utils/assign'
 import { createCommands } from './commands/createCommands'
 import { createShared, type JumInstance, type Options } from './shared'
-import { createGesture } from './gesture'
+import { createGestures } from './gestures'
 
 const createObject = <T extends object, P extends object>(
   proto: T,
@@ -27,13 +27,11 @@ export const createJum = (
     }
   }, options)
 
+  // Object.create 사용은 prototype등의 이점 보다는
+  // 단순, 고수준 API와 저수준 API를 구분하기 위한 의미가 큼.
   const instance: JumInstance = shared.instance = createObject({
-    /**
-     * prototype 으로 들어가게 해놨지만, 일반적인 인스턴스와 달리 실제로 함수를 공유 하지는 않음
-     * 단순, 고수준 API와 저수준 API를 구분하기 위한 용도로 사용
-     */
     ...createCommands(shared),
-    ...createGesture(shared)
+    ...createGestures(shared)
   }, {
     version
   })

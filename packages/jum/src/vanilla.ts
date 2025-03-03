@@ -12,18 +12,33 @@ const createObject = <T extends object, P extends object>(
   Object.create(proto, Object.getOwnPropertyDescriptors(props))
 )
 
+const createElement = (child: HTMLElement) => {
+  const element = document.createElement('div')
+
+  if (child.parentNode) {
+    child.parentNode.insertBefore(element, child)
+  }
+
+  element.appendChild(child)
+
+  return element
+}
+
 export const jum = (
   element: HTMLElement,
   options: Partial<Options> = {}
 ) => {
   const shared = createShared()
-  shared.element = element
+  shared.element = createElement(element)
   shared.options = assign({
     x: 0,
     y: 0,
     scale: 1,
     minScale: 0.5,
-    maxScale: 4
+    maxScale: 4,
+    onZoomStart: () => {},
+    onZoomUpdate: () => {},
+    onZoomEnd: () => {}
   }, options)
 
   // Object.create 사용은 단순, 고수준 API와 저수준 API를 구분하기 위한 의미가 큼.

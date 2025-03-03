@@ -1,9 +1,15 @@
 import { jum } from '@jeanjun/jum'
 
 const jumer = jum(document.getElementById('jum')!, {
-  minScale: 0.5,
-  maxScale: 4,
-  scale: 1
+  onZoomStart: () => {
+    console.log('onZoomStart')
+  },
+  onZoomUpdate: ({ camera }) => {
+    console.log('onZoomUpdate', camera)
+  },
+  onZoomEnd: () => {
+    console.log('onZoomEnd')
+  }
 })
 
 console.log(jumer)

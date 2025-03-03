@@ -8,12 +8,13 @@ type Options = {
   scale: number
 }
 
-export const transform = (shared: Shared) => ({
-  x,
-  y,
-  scale
-}: Partial<Options>) => {
+export const transform = (shared: Shared) => (options: Partial<Options>) => {
   const { element } = shared
-  shared.camera = assign(shared.camera, { x, y, scale })
-  styles(element, shared.camera)
+  const { x, y, scale } = assign(shared.camera, options)
+  shared.camera = { x, y, scale }
+
+  styles(element, {
+    transform: `translate(${x}px, ${y}px) scale(${scale})`,
+    transformOrigin: '0 0'
+  })
 }

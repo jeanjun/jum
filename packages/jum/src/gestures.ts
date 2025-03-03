@@ -1,4 +1,4 @@
-import type { Shared } from './shared'
+import type { Camera, Shared } from './shared'
 
 export type Gestures = {
   attach: () => void
@@ -32,27 +32,43 @@ export const createGestures = (shared: Shared) => {
 
   const pinchState = {
     distance: 0,
+    camera: { x: 0, y: 0, scale: 1 },
     midPoint: { x: 0, y: 0 },
     relativePoint: { x: 0, y: 0 }
   }
 
-  const camera = {
-    ...shared.camera
+  const onZoomStart = (event: TouchEvent, camera: Camera) => {
+    options?.onZoomStart({ nativeEvent: event, camera })
+  }
+
+  const onZoomUpdate = (event: TouchEvent, camera: Camera) => {
+    shared.isZooming = true
+
+    shared.instance.transform(camera)
+
+    options?.onZoomUpdate({ nativeEvent: event, camera })
+  }
+
+  const onZoomEnd = (event: TouchEvent, camera: Camera) => {
+    shared.isZooming = false
+
+    options?.onZoomEnd({ nativeEvent: event, camera })
   }
 
   const handleTouchStart = (event: TouchEvent) => {
     const touches = Array.from(event.touches)
-
-    const pinchPointerCount = touches.length
-    if (pinchPointerCount >= PINCH_POINTER_COUNT) {
+    if (touches.length >= PINCH_POINTER_COUNT) {
       const point1 = { x: touches[0].clientX, y: touches[0].clientY }
       const point2 = { x: touches[1].clientX, y: touches[1].clientY }
       pinchState.distance = getDistance(point1, point2)
       pinchState.midPoint = getMidPoint(point1, point2)
+      pinchState.camera = { ...shared.camera }
       pinchState.relativePoint = {
-        x: (pinchState.midPoint.x - camera.x) / camera.scale,
-        y: (pinchState.midPoint.y - camera.y) / camera.scale
+        x: (pinchState.midPoint.x - pinchState.camera.x) / pinchState.camera.scale,
+        y: (pinchState.midPoint.y - pinchState.camera.y) / pinchState.camera.scale
       }
+
+      onZoomStart(event, { ...pinchState.camera })
 
       event.preventDefault()
     }
@@ -65,14 +81,26 @@ export const createGestures = (shared: Shared) => {
       const point2 = { x: touches[1].clientX, y: touches[1].clientY }
       const distance = getDistance(point1, point2)
       const midPoint = getMidPoint(point1, point2)
-      camera.scale = camera.scale * (distance / pinchState.distance)
-      camera.x = midPoint.x - camera.scale * pinchState.relativePoint.x
-      camera.y = midPoint.y - camera.scale * pinchState.relativePoint.y
+      const newScale = pinchState.camera.scale * (distance / pinchState.distance)
+      const newX = midPoint.x - newScale * pinchState.relativePoint.x
+      const newY = midPoint.y - newScale * pinchState.relativePoint.y
+
+      onZoomUpdate(event, {
+        x: newX,
+        y: newY,
+        scale: newScale
+      })
+
+      event.preventDefault()
     }
   }
 
   const handleTouchEnd = (event: TouchEvent) => {
-    console.log(event, 'touchend')
+    shared.isZooming = false
+
+    onZoomEnd(event, { ...shared.camera })
+
+    event.preventDefault()
   }
 
   const attach = () => {

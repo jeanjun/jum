@@ -1,5 +1,9 @@
-import './style.css'
+import { jum } from '@jeanjun/jum'
 
-import { createJum } from '@jeanjun/jum'
+const jumer = jum(document.getElementById('jum')!, {
+  minScale: 0.5,
+  maxScale: 4,
+  scale: 1
+})
 
-createJum(document.getElementById('jum')!)
+console.log(jumer)

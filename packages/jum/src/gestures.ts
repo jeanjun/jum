@@ -1,3 +1,4 @@
+import { styles } from './helpers/styles'
 import type { Camera, Shared } from './shared'
 
 export type Gestures = {
@@ -27,8 +28,10 @@ const getMidPoint = (p1: Point, p2: Point): {
 const PINCH_POINTER_COUNT = 2
 
 export const createGestures = (shared: Shared) => {
-  const { element, options } = shared
+  const { options } = shared
   let attached = false
+
+  const { minScale, maxScale } = options
 
   const pinchState = {
     distance: 0,
@@ -44,15 +47,59 @@ export const createGestures = (shared: Shared) => {
   const onZoomUpdate = (event: TouchEvent, camera: Camera) => {
     shared.isZooming = true
 
+    styles(shared.element, { overflow: '' })
     shared.instance.transform(camera)
 
     options?.onZoomUpdate({ nativeEvent: event, camera })
   }
 
-  const onZoomEnd = (event: TouchEvent, camera: Camera) => {
+  const onZoomEnd = async (event: TouchEvent, camera: Camera) => {
     shared.isZooming = false
 
+    if (camera.scale > maxScale) {
+      await resetToMaxZoom()
+    }
+
+    if (camera.scale < minScale) {
+      resetToMinZoom()
+    }
+
+    if (camera.scale > minScale) {
+      switchToScrollMode()
+    }
+
     options?.onZoomEnd({ nativeEvent: event, camera })
+  }
+
+  const resetToMinZoom = () => {
+    shared.instance.transform({
+      x: 0,
+      y: 0,
+      scale: minScale,
+      animation: true
+    })
+  }
+
+  const resetToMaxZoom = () => {
+    return shared.instance.transform({
+      x: pinchState.midPoint.x - maxScale * pinchState.relativePoint.x,
+      y: pinchState.midPoint.y - maxScale * pinchState.relativePoint.y,
+      scale: maxScale,
+      animation: true
+    })
+  }
+
+  const switchToScrollMode = () => {
+    const camera = { ...shared.camera }    
+    shared.instance.transform({
+      x: 0,
+      y: 0,
+      scale: camera.scale
+    })
+  
+    styles(shared.element, { overflow: 'auto' })
+    shared.element.scrollLeft = Math.abs(camera.x)
+    shared.element.scrollTop = Math.abs(camera.y)
   }
 
   const handleTouchStart = (event: TouchEvent) => {
@@ -96,11 +143,19 @@ export const createGestures = (shared: Shared) => {
   }
 
   const handleTouchEnd = (event: TouchEvent) => {
-    shared.isZooming = false
+    if (shared.isZooming) {
+      onZoomEnd(event, { ...shared.camera })
 
-    onZoomEnd(event, { ...shared.camera })
+      event.preventDefault()
+    }
+  }
 
-    event.preventDefault()
+  const handleScroll = () => {
+    shared.camera = {
+      ...shared.camera,
+      x: -shared.element.scrollLeft,
+      y: -shared.element.scrollTop
+    }
   }
 
   const attach = () => {
@@ -108,9 +163,10 @@ export const createGestures = (shared: Shared) => {
       return
     }
 
-    element.addEventListener('touchstart', handleTouchStart)
-    element.addEventListener('touchmove', handleTouchMove)
-    element.addEventListener('touchend', handleTouchEnd)
+    shared.element.addEventListener('touchstart', handleTouchStart)
+    shared.element.addEventListener('touchmove', handleTouchMove)
+    shared.element.addEventListener('touchend', handleTouchEnd)
+    shared.element.addEventListener('scroll', handleScroll)
 
     attached = true
   }
@@ -120,9 +176,10 @@ export const createGestures = (shared: Shared) => {
       return
     }
 
-    element.removeEventListener('touchstart', handleTouchStart)
-    element.removeEventListener('touchmove', handleTouchMove)
-    element.removeEventListener('touchend', handleTouchEnd)
+    shared.element.removeEventListener('touchstart', handleTouchStart)
+    shared.element.removeEventListener('touchmove', handleTouchMove)
+    shared.element.removeEventListener('touchend', handleTouchEnd)
+    shared.element.removeEventListener('scroll', handleScroll)
 
     attached = false
   }

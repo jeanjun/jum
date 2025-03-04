@@ -34,7 +34,7 @@ export const jum = (
     x: 0,
     y: 0,
     scale: 1,
-    minScale: 0.5,
+    minScale: 1,
     maxScale: 4,
     onZoomStart: () => {},
     onZoomUpdate: () => {},

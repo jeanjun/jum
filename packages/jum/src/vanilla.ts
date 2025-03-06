@@ -12,7 +12,7 @@ const createObject = <T extends object, P extends object>(
   Object.create(proto, Object.getOwnPropertyDescriptors(props))
 )
 
-const createElement = (child: HTMLElement) => {
+const createWrapper = (child: HTMLElement) => {
   const element = document.createElement('div')
 
   if (child.parentNode) {
@@ -29,7 +29,8 @@ export const jum = (
   options: Partial<Options> = {}
 ) => {
   const shared = createShared()
-  shared.element = createElement(element)
+  shared.wrapper = createWrapper(element)
+  shared.element = element
   shared.options = assign({
     x: 0,
     y: 0,
@@ -46,6 +47,7 @@ export const jum = (
     ...createCommands(shared),
     ...createGestures(shared)
   }, {
+    wrapper: shared.wrapper,
     element,
     get camera () {
       return shared.camera

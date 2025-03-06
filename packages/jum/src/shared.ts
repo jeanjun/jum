@@ -6,6 +6,7 @@ export type Camera = {
   y: number
   scale: number
 }
+
 export namespace JumEvents {
   export type zoomStart = {
     nativeEvent: TouchEvent
@@ -34,11 +35,13 @@ export type Options = {
 
 export type JumInstance = Commands & Gestures & {
   element: HTMLElement
+  wrapper: HTMLElement
   camera: Camera
 }
 
 export type Shared = {
   element: HTMLElement
+  wrapper: HTMLElement
   options: Options
   instance: JumInstance
   camera: Camera

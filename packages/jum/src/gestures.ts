@@ -6,7 +6,7 @@ export type Gestures = {
   detach: () => void
 }
 
-export type Point = {
+type Point = {
   x: number
   y: number
 }
@@ -47,7 +47,7 @@ export const createGestures = (shared: Shared) => {
   const onZoomUpdate = (event: TouchEvent, camera: Camera) => {
     shared.isZooming = true
 
-    styles(shared.element, { overflow: '' })
+    styles(shared.wrapper, { overflow: '' })
     shared.instance.transform(camera)
 
     options?.onZoomUpdate({ nativeEvent: event, camera })
@@ -89,17 +89,51 @@ export const createGestures = (shared: Shared) => {
     })
   }
 
-  const switchToScrollMode = () => {
-    const camera = { ...shared.camera }    
-    shared.instance.transform({
+  const switchToScrollMode = async () => {
+    const camera = { ...shared.camera }
+    let x = camera.x
+    let y = camera.y
+
+    const elementRect = shared.element.getBoundingClientRect()
+    const wrapperRect = shared.wrapper.getBoundingClientRect()
+    const gaps = {
+      left: elementRect.left > wrapperRect.left,
+      right: elementRect.right < wrapperRect.right,
+      top: elementRect.top > wrapperRect.top,
+      bottom: elementRect.bottom < wrapperRect.bottom
+    }
+
+    const hasGaps = gaps.left || gaps.right || gaps.top || gaps.bottom
+    if (hasGaps) {
+      if (gaps.left) {
+        x = 0
+      } else if (gaps.right) {
+        x = wrapperRect.width - elementRect.width
+      }
+
+      if (gaps.top) {
+        y = 0
+      } else if (gaps.bottom) {
+        y = wrapperRect.height - elementRect.height
+      }
+      
+      await shared.instance.transform({
+        x,
+        y,
+        scale: camera.scale,
+        animation: true
+      })
+    }
+
+    await shared.instance.transform({
       x: 0,
       y: 0,
       scale: camera.scale
     })
-  
-    styles(shared.element, { overflow: 'auto' })
-    shared.element.scrollLeft = Math.abs(camera.x)
-    shared.element.scrollTop = Math.abs(camera.y)
+
+    styles(shared.wrapper, { overflow: 'auto' })
+    shared.wrapper.scrollLeft = Math.abs(x)
+    shared.wrapper.scrollTop = Math.abs(y)
   }
 
   const handleTouchStart = (event: TouchEvent) => {
@@ -153,8 +187,8 @@ export const createGestures = (shared: Shared) => {
   const handleScroll = () => {
     shared.camera = {
       ...shared.camera,
-      x: -shared.element.scrollLeft,
-      y: -shared.element.scrollTop
+      x: -shared.wrapper.scrollLeft,
+      y: -shared.wrapper.scrollTop
     }
   }
 
@@ -163,10 +197,10 @@ export const createGestures = (shared: Shared) => {
       return
     }
 
-    shared.element.addEventListener('touchstart', handleTouchStart)
-    shared.element.addEventListener('touchmove', handleTouchMove)
-    shared.element.addEventListener('touchend', handleTouchEnd)
-    shared.element.addEventListener('scroll', handleScroll)
+    shared.wrapper.addEventListener('touchstart', handleTouchStart)
+    shared.wrapper.addEventListener('touchmove', handleTouchMove)
+    shared.wrapper.addEventListener('touchend', handleTouchEnd)
+    shared.wrapper.addEventListener('scroll', handleScroll)
 
     attached = true
   }
@@ -176,10 +210,10 @@ export const createGestures = (shared: Shared) => {
       return
     }
 
-    shared.element.removeEventListener('touchstart', handleTouchStart)
-    shared.element.removeEventListener('touchmove', handleTouchMove)
-    shared.element.removeEventListener('touchend', handleTouchEnd)
-    shared.element.removeEventListener('scroll', handleScroll)
+    shared.wrapper.removeEventListener('touchstart', handleTouchStart)
+    shared.wrapper.removeEventListener('touchmove', handleTouchMove)
+    shared.wrapper.removeEventListener('touchend', handleTouchEnd)
+    shared.wrapper.removeEventListener('scroll', handleScroll)
 
     attached = false
   }

@@ -5,14 +5,14 @@ const argv = minimist(process.argv.slice(2))
 let command = 'turbo run dev'
 
 if (argv.ws) {
- const appName = argv.ws
+  const appName = argv.ws
 
- command = `turbo run dev --filter=${appName}...`
+  command = `turbo run dev --filter=${appName}...`
 }
 
 try {
- execSync(command, { stdio: 'inherit' })
+  execSync(command, { stdio: 'inherit' })
 } catch (error) {
- console.error('Error executing command:', error)
- process.exit(1)
+  console.error('Error executing command:', error)
+  process.exit(1)
 }

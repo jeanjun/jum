@@ -46,8 +46,10 @@ export type Shared = {
   instance: JumInstance
   camera: Camera
   isZooming: boolean
+  isAnimating: boolean
 }
 
 export const createShared = () => ({
-  isZooming: false
+  isZooming: false,
+  isAnimating: false,
 } as Shared)

@@ -40,7 +40,7 @@ export const createGestures = (shared: Shared) => {
     relativePoint: { x: 0, y: 0 }
   }
 
-  const onZoomStart = (event: TouchEvent, camera: Camera) => {
+  const onZoomStart = (event: TouchEvent, camera: Camera) => {    
     options?.onZoomStart({ nativeEvent: event, camera })
   }
 
@@ -54,40 +54,44 @@ export const createGestures = (shared: Shared) => {
   }
 
   const onZoomEnd = async (event: TouchEvent, camera: Camera) => {
-    shared.isZooming = false
+    if (shared.isAnimating) {
+      return
+    }
+
+    if (camera.scale < minScale) {
+      await resetToMinZoom()
+    }
 
     if (camera.scale > maxScale) {
       await resetToMaxZoom()
     }
 
-    if (camera.scale < minScale) {
-      resetToMinZoom()
+    if (camera.scale > minScale) {
+      await switchToScrollMode()
     }
 
-    if (camera.scale > minScale) {
-      switchToScrollMode()
-    }
+    shared.isZooming = false
 
     options?.onZoomEnd({ nativeEvent: event, camera })
   }
 
-  const resetToMinZoom = () => {
+  const resetToMinZoom = () => (
     shared.instance.transform({
       x: 0,
       y: 0,
       scale: minScale,
       animation: true
     })
-  }
+  )
 
-  const resetToMaxZoom = () => {
-    return shared.instance.transform({
+  const resetToMaxZoom = () => (
+    shared.instance.transform({
       x: pinchState.midPoint.x - maxScale * pinchState.relativePoint.x,
       y: pinchState.midPoint.y - maxScale * pinchState.relativePoint.y,
       scale: maxScale,
       animation: true
     })
-  }
+  )
 
   const switchToScrollMode = async () => {
     const camera = { ...shared.camera }
@@ -116,7 +120,7 @@ export const createGestures = (shared: Shared) => {
       } else if (gaps.bottom) {
         y = wrapperRect.height - elementRect.height
       }
-      
+
       await shared.instance.transform({
         x,
         y,

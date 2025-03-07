@@ -9,25 +9,29 @@ type Options = {
   animation?: boolean
 }
 
-export const transform = (shared: Shared) => (options: Partial<Options>) => {
-  return new Promise<void>((resolve) => {
-    const { instance } = shared
+export const transform = (shared: Shared) => (options: Partial<Options>) => (
+  new Promise<void>((resolve) => {
+    const { element } = shared
     const { x, y, scale, animation } = assign(shared.camera, options)
     shared.camera = { x, y, scale }
+    shared.isAnimating = !!animation
 
-    styles(instance.element, {
+    styles(element, {
       transform: `matrix(${scale}, 0, 0, ${scale}, ${x}, ${y})`,
       transformOrigin: '0 0',
       transition: 
-        animation
+        shared.isAnimating
           ? 'transform 0.5s cubic-bezier(0.32, 0.72, 0, 1)' 
           : ''
     })
 
     if (animation) {
-      instance.element.addEventListener('transitionend', () => resolve(), { once: true })
+      element.addEventListener('transitionend', () => {
+        resolve()
+        shared.isAnimating = false
+      }, { once: true })
     } else {
       resolve()
     }
   })
-}
+)

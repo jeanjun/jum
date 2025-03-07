@@ -40,7 +40,7 @@ export const createGestures = (shared: Shared) => {
     relativePoint: { x: 0, y: 0 }
   }
 
-  const onZoomStart = (event: TouchEvent, camera: Camera) => {    
+  const onZoomStart = (event: TouchEvent, camera: Camera) => {
     options?.onZoomStart({ nativeEvent: event, camera })
   }
 
@@ -138,6 +138,7 @@ export const createGestures = (shared: Shared) => {
     styles(shared.wrapper, { overflow: 'auto' })
     shared.wrapper.scrollLeft = Math.abs(x)
     shared.wrapper.scrollTop = Math.abs(y)
+    shared.camera = { x, y, scale: camera.scale }
   }
 
   const handleTouchStart = (event: TouchEvent) => {
@@ -148,6 +149,7 @@ export const createGestures = (shared: Shared) => {
       pinchState.distance = getDistance(point1, point2)
       pinchState.midPoint = getMidPoint(point1, point2)
       pinchState.camera = { ...shared.camera }
+
       pinchState.relativePoint = {
         x: (pinchState.midPoint.x - pinchState.camera.x) / pinchState.camera.scale,
         y: (pinchState.midPoint.y - pinchState.camera.y) / pinchState.camera.scale
@@ -159,14 +161,14 @@ export const createGestures = (shared: Shared) => {
     }
   }
 
-  const handleTouchMove = (event: TouchEvent) => {
+  const handleTouchMove = (event: TouchEvent) => {  
     const touches = Array.from(event.touches)
     if (touches.length >= PINCH_POINTER_COUNT) {
       const point1 = { x: touches[0].clientX, y: touches[0].clientY }
       const point2 = { x: touches[1].clientX, y: touches[1].clientY }
       const distance = getDistance(point1, point2)
       const midPoint = getMidPoint(point1, point2)
-      const newScale = pinchState.camera.scale * (distance / pinchState.distance)
+      const newScale = Math.min(pinchState.camera.scale * (distance / pinchState.distance), maxScale + 1.4)
       const newX = midPoint.x - newScale * pinchState.relativePoint.x
       const newY = midPoint.y - newScale * pinchState.relativePoint.y
 

@@ -1,6 +1,6 @@
 import { jum } from '@jeanjun/jum'
 
-const jumer = jum(document.getElementById('jum')!, {
+const jumer = jum(document.querySelector('img')!, {
   onZoomStart: () => {
     // console.log('onZoomStart')
   },
@@ -9,7 +9,8 @@ const jumer = jum(document.getElementById('jum')!, {
   },
   onZoomEnd: () => {
     // console.log('onZoomEnd')
-  }
+  },
+  scale: 1
 })
 
 console.log(jumer)

@@ -13,15 +13,16 @@ const createObject = <T extends object, P extends object>(
 )
 
 const createWrapper = (child: HTMLElement) => {
-  const element = document.createElement('div')
+  const wrapper = document.createElement('div')
+  wrapper.classList.add('jum-wrapper')
 
   if (child.parentNode) {
-    child.parentNode.insertBefore(element, child)
+    child.parentNode.insertBefore(wrapper, child)
   }
 
-  element.appendChild(child)
+  wrapper.appendChild(child)
 
-  return element
+  return wrapper
 }
 
 export const jum = (

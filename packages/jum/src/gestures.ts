@@ -35,9 +35,15 @@ export const createGestures = (shared: Shared) => {
 
   const pinchState = {
     distance: 0,
-    camera: { x: 0, y: 0, scale: 1 },
     midPoint: { x: 0, y: 0 },
+    initialCamera: { x: 0, y: 0, scale: 1 },
     relativePoint: { x: 0, y: 0 }
+  }
+
+  const dragState = {
+    isDragging: false,
+    lastX: 0,
+    lastY: 0
   }
 
   const onZoomStart = (event: TouchEvent, camera: Camera) => {
@@ -71,7 +77,6 @@ export const createGestures = (shared: Shared) => {
     }
 
     shared.isZooming = false
-
     options?.onZoomEnd({ nativeEvent: event, camera })
   }
 
@@ -114,7 +119,6 @@ export const createGestures = (shared: Shared) => {
       } else if (gaps.right) {
         x = wrapperRect.width - elementRect.width
       }
-
       if (gaps.top) {
         y = 0
       } else if (gaps.bottom) {
@@ -148,27 +152,29 @@ export const createGestures = (shared: Shared) => {
       const point2 = { x: touches[1].clientX, y: touches[1].clientY }
       pinchState.distance = getDistance(point1, point2)
       pinchState.midPoint = getMidPoint(point1, point2)
-      pinchState.camera = { ...shared.camera }
-
+      pinchState.initialCamera = { ...shared.camera }
       pinchState.relativePoint = {
-        x: (pinchState.midPoint.x - pinchState.camera.x) / pinchState.camera.scale,
-        y: (pinchState.midPoint.y - pinchState.camera.y) / pinchState.camera.scale
+        x: (pinchState.midPoint.x - pinchState.initialCamera.x) / pinchState.initialCamera.scale,
+        y: (pinchState.midPoint.y - pinchState.initialCamera.y) / pinchState.initialCamera.scale
       }
 
-      onZoomStart(event, { ...pinchState.camera })
+      onZoomStart(event, { ...pinchState.initialCamera })
 
       event.preventDefault()
     }
   }
 
-  const handleTouchMove = (event: TouchEvent) => {  
+  const handleTouchMove = (event: TouchEvent) => {
     const touches = Array.from(event.touches)
     if (touches.length >= PINCH_POINTER_COUNT) {
       const point1 = { x: touches[0].clientX, y: touches[0].clientY }
       const point2 = { x: touches[1].clientX, y: touches[1].clientY }
       const distance = getDistance(point1, point2)
       const midPoint = getMidPoint(point1, point2)
-      const newScale = Math.min(pinchState.camera.scale * (distance / pinchState.distance), maxScale + 1.4)
+      const newScale = Math.min(
+        pinchState.initialCamera.scale * (distance / pinchState.distance),
+        maxScale + 1.4
+      )
       const newX = midPoint.x - newScale * pinchState.relativePoint.x
       const newY = midPoint.y - newScale * pinchState.relativePoint.y
 
@@ -185,9 +191,48 @@ export const createGestures = (shared: Shared) => {
   const handleTouchEnd = (event: TouchEvent) => {
     if (shared.isZooming) {
       onZoomEnd(event, { ...shared.camera })
-
       event.preventDefault()
     }
+  }
+
+  const handleMouseDown = (event: MouseEvent) => {
+    if (event.button !== 0) {
+      return
+    }
+
+    event.preventDefault()
+
+    dragState.isDragging = true
+    dragState.lastX = event.clientX
+    dragState.lastY = event.clientY
+  }
+
+  const handleMouseMove = (event: MouseEvent) => {
+    if (!dragState.isDragging) {
+      return
+    }
+
+    event.preventDefault()
+
+    const dx = event.clientX - dragState.lastX
+    const dy = event.clientY - dragState.lastY
+
+    dragState.lastX = event.clientX
+    dragState.lastY = event.clientY
+
+    const { x, y, scale } = shared.camera
+    const newX = x + dx
+    const newY = y + dy
+
+    shared.instance.transform({ x: newX, y: newY, scale })
+  }
+
+  const handleMouseUp = (event: MouseEvent) => {
+    if (!dragState.isDragging) {
+      return
+    }
+
+    dragState.isDragging = false
   }
 
   const handleScroll = () => {
@@ -198,28 +243,63 @@ export const createGestures = (shared: Shared) => {
     }
   }
 
-  const attach = () => {
-    if (attached) {
+  const handleWheel = (event: WheelEvent) => {
+    if (!event.ctrlKey) {
       return
     }
+
+    event.preventDefault()
+
+    const wrapperRect = shared.wrapper.getBoundingClientRect()
+    const anchorX = event.clientX - wrapperRect.left
+    const anchorY = event.clientY - wrapperRect.top
+  
+    const oldScale = shared.camera.scale
+  
+    const zoomIntensity = 0.005
+    const scaleFactor = 1 - event.deltaY * zoomIntensity
+    const newScale = Math.max(minScale, Math.min(maxScale, oldScale * scaleFactor))
+  
+    const newX = anchorX - (newScale / oldScale) * (anchorX - shared.camera.x)
+    const newY = anchorY - (newScale / oldScale) * (anchorY - shared.camera.y)
+  
+    shared.instance.transform({
+      x: newX,
+      y: newY,
+      scale: newScale
+    })
+  }
+
+  const attach = () => {
+    if (attached) return
 
     shared.wrapper.addEventListener('touchstart', handleTouchStart)
     shared.wrapper.addEventListener('touchmove', handleTouchMove)
     shared.wrapper.addEventListener('touchend', handleTouchEnd)
+
+    // shared.wrapper.addEventListener('mousedown', handleMouseDown)
+    // document.addEventListener('mousemove', handleMouseMove)
+    // document.addEventListener('mouseup', handleMouseUp)
+
     shared.wrapper.addEventListener('scroll', handleScroll)
+    // shared.wrapper.addEventListener('wheel', handleWheel)
 
     attached = true
   }
 
   const detach = () => {
-    if (!attached) {
-      return
-    }
+    if (!attached) return
 
     shared.wrapper.removeEventListener('touchstart', handleTouchStart)
     shared.wrapper.removeEventListener('touchmove', handleTouchMove)
     shared.wrapper.removeEventListener('touchend', handleTouchEnd)
+
+    // shared.wrapper.removeEventListener('mousedown', handleMouseDown)
+    // document.removeEventListener('mousemove', handleMouseMove)
+    // document.removeEventListener('mouseup', handleMouseUp)
+
     shared.wrapper.removeEventListener('scroll', handleScroll)
+    // shared.wrapper.removeEventListener('wheel', handleWheel)
 
     attached = false
   }

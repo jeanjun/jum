@@ -1,5 +1,5 @@
 {
-  "name": "@jeanjun/jum",
+  "name": "jum-core",
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -16,15 +16,7 @@
     "dev": "tsup --watch",
     "build": "tsup"
   },
-  "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
   "devDependencies": {
-    "@types/react": "^19.0.8",
-    "@types/react-dom": "^19.0.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
     "tsup": "^8.3.6",
     "typescript": "^5.7.3"
   },

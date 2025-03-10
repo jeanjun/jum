@@ -1,7 +1,7 @@
 import { version } from '.'
 import { assign } from './helpers/assign'
 import { createCommands } from './commands/createCommands'
-import { Camera, createShared, type JumInstance, type Options } from './shared'
+import { Camera, createShared, type JumInstance, type JumOptions } from './shared'
 import { createGestures } from './gestures'
 import { warn } from './helpers/warn'
 
@@ -27,7 +27,7 @@ const createWrapper = (child: HTMLElement) => {
 
 export const jum = (
   element: HTMLElement,
-  options: Partial<Options> = {}
+  options: Partial<JumOptions> = {}
 ) => {
   const shared = createShared()
   shared.wrapper = createWrapper(element)

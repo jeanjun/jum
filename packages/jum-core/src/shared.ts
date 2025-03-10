@@ -22,7 +22,7 @@ export namespace JumEvents {
   }
 }
 
-export type Options = {
+export type JumOptions = {
   minScale: number
   maxScale: number
   x: number 
@@ -42,7 +42,7 @@ export type JumInstance = Commands & Gestures & {
 export type Shared = {
   element: HTMLElement
   wrapper: HTMLElement
-  options: Options
+  options: JumOptions
   instance: JumInstance
   camera: Camera
   isZooming: boolean

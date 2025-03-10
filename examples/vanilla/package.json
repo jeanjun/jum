@@ -13,6 +13,6 @@
     "vite": "^6.2.0"
   },
   "dependencies": {
-    "@jeanjun/jum": "workspace:^"
+    "jum-core": "workspace:^"
   }
 }

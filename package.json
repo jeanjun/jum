@@ -6,20 +6,16 @@
     "build": "git submodule init && git submodule update && tsx scripts/build.ts",
     "dev": "tsx scripts/dev.ts",
     "postinstall": "manypkg fix",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:serve": "vitepress serve docs",
     "clean": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +"
   },
-  "packageManager": "pnpm@7.15.0",
+  "packageManager": "pnpm@8.9.2",
   "devDependencies": {
     "@manypkg/cli": "latest",
     "@types/minimist": "^1.2.5",
-    "@types/node": "^20",
+    "@types/node": "22.13.8",
     "minimist": "^1.2.8",
     "plop": "^3.1.2",
     "tsx": "^4.11.0",
-    "turbo": "latest",
-    "vitepress": "1.0.0-rc.22"
+    "turbo": "latest"
   }
 }

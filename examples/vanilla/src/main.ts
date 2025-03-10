@@ -1,4 +1,4 @@
-import { jum } from '@jeanjun/jum'
+import { jum } from 'jum-core'
 
 const jumer = jum(document.querySelector('img')!, {
   onZoomStart: () => {

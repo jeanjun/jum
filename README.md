@@ -1,6 +1,6 @@
-# jum
+# Jum
 
-🖼️ 🔍 A library that enables natural image zoom in/out gestures
+🖼️ 🔍 Jum is a library that enables natural image zoom in/out gestures.
 
 ## Setup and Running
 ```bash

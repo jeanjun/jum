@@ -3,6 +3,8 @@
   "pages": [
     "---Getting Started---",
     "vanilla",
-    "react"
+    "react",
+    "---API---",
+    "commands"
   ]
 }

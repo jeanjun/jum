@@ -1,0 +1,81 @@
+---
+title: React
+description: "Jum is a library that enables natural image zoom in/out gestures."
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
+import { TypeTable } from 'fumadocs-ui/components/type-table'
+
+## Installation
+<Tabs items={['pnpm', 'npm', 'yarn']} groupId="language">
+  <Tab value="pnpm">
+    ```bash
+    pnpm add jum-react
+    ```  
+  </Tab>
+  <Tab value="npm">
+    ```bash
+    npm i jum-react
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```bash
+    yarn add jum-react
+    ```
+  </Tab>
+</Tabs>
+
+## Usage
+```tsx
+import { Jum } from 'jum-react'
+
+<Jum>
+  <img src="image.webp" alt="" />
+</Jum>
+```
+
+## props
+<TypeTable
+  type={{
+    x: {
+      type: 'number',
+      default: '0'
+    },
+    y: {
+      type: 'number',
+      default: '0'
+    },
+    scale: {
+      type: 'number',
+      default: 1
+    },
+    minScale: {
+      type: 'number',
+      default: 1
+    },
+    maxScale: {
+      type: 'number',
+      default: 3
+    },
+    onJum: {
+      type: 'function',
+      typeDescription: '(jumer: JumInstance) => void',
+      default: '-'
+    },
+    onZoomStart: {
+      type: 'function',
+      typeDescription: '(event: JumEvents.zoomStart) => void',
+      default: '-'
+    },
+    onZoomUpdate: {
+      type: 'function',
+      typeDescription: '(event: JumEvents.zoomUpdate) => void',
+      default: '-'
+    },
+    onZoomEnd: {
+      type: 'function',
+      typeDescription: '(event: JumEvents.zoomEnd) => void',
+      default: '-'
+    }
+  }}
+/>

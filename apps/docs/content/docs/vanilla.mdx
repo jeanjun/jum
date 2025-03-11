@@ -1,0 +1,74 @@
+---
+title: Vanilla
+description: "Jum is a library that enables natural image zoom in/out gestures."
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
+import { TypeTable } from 'fumadocs-ui/components/type-table'
+
+## Installation
+<Tabs items={['pnpm', 'npm', 'yarn']} groupId="language">
+  <Tab value="pnpm">
+    ```bash
+    pnpm add jum-core
+    ```  
+  </Tab>
+  <Tab value="npm">
+    ```bash
+    npm i jum-core
+    ```
+  </Tab>
+  <Tab value="yarn">
+    ```bash
+    yarn add jum-core
+    ```
+  </Tab>
+</Tabs>
+
+## Usage
+```js
+import { jum } from 'jum-core'
+
+const jumer = jum(element, options)
+```
+
+## Options
+<TypeTable
+  type={{
+    x: {
+      type: 'number',
+      default: '0'
+    },
+    y: {
+      type: 'number',
+      default: '0'
+    },
+    scale: {
+      type: 'number',
+      default: 1
+    },
+    minScale: {
+      type: 'number',
+      default: 1
+    },
+    maxScale: {
+      type: 'number',
+      default: 3
+    },
+    onZoomStart: {
+      type: 'function',
+      typeDescription: '(event: JumEvents.zoomStart) => void',
+      default: '-'
+    },
+    onZoomUpdate: {
+      type: 'function',
+      typeDescription: '(event: JumEvents.zoomUpdate) => void',
+      default: '-'
+    },
+    onZoomEnd: {
+      type: 'function',
+      typeDescription: '(event: JumEvents.zoomEnd) => void',
+      default: '-'
+    }
+  }}
+/>

@@ -1,0 +1,24 @@
+---
+title: Commands
+description: "Commands for programmatically controlling a Jum instance"
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
+import { TypeTable } from 'fumadocs-ui/components/type-table'
+
+## transform
+Updates the element’s position and scale. All options are optional.
+```js
+jumer.transform({
+  x: 0,
+  y: 0,
+  scale: 0,
+  animation: false
+})
+```
+
+## destroy
+Cleans up and removes the instance.
+```js
+jumer.destroy()
+```

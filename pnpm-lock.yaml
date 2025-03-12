@@ -41,6 +41,9 @@ importers:
       fumadocs-ui:
         specifier: 15.0.15
         version: 15.0.15(@types/react-dom@19.0.4)(@types/react@19.0.10)(fumadocs-core@15.0.15)(next@15.2.0)(react-dom@19.0.0)(react@19.0.0)(tailwindcss@4.0.12)
+      jum-react:
+        specifier: workspace:^
+        version: link:../../packages/jum-react
       next:
         specifier: 15.2.0
         version: 15.2.0(react-dom@19.0.0)(react@19.0.0)
@@ -50,6 +53,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
+      tailwind-merge:
+        specifier: ^3.0.2
+        version: 3.0.2
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.0.9

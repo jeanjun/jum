@@ -148,8 +148,9 @@ export const createGestures = (shared: Shared) => {
   const handleTouchStart = (event: TouchEvent) => {
     const touches = Array.from(event.touches)
     if (touches.length >= PINCH_POINTER_COUNT) {
-      const point1 = { x: touches[0].clientX, y: touches[0].clientY }
-      const point2 = { x: touches[1].clientX, y: touches[1].clientY }
+      const wrapperRect = shared.wrapper.getBoundingClientRect()
+      const point1 = { x: touches[0].clientX - wrapperRect.left, y: touches[0].clientY - wrapperRect.top}
+      const point2 = { x: touches[1].clientX - wrapperRect.left, y: touches[1].clientY - wrapperRect.top}
       pinchState.distance = getDistance(point1, point2)
       pinchState.midPoint = getMidPoint(point1, point2)
       pinchState.initialCamera = { ...shared.camera }
@@ -167,8 +168,9 @@ export const createGestures = (shared: Shared) => {
   const handleTouchMove = (event: TouchEvent) => {
     const touches = Array.from(event.touches)
     if (touches.length >= PINCH_POINTER_COUNT) {
-      const point1 = { x: touches[0].clientX, y: touches[0].clientY }
-      const point2 = { x: touches[1].clientX, y: touches[1].clientY }
+      const wrapperRect = shared.wrapper.getBoundingClientRect()
+      const point1 = { x: touches[0].clientX - wrapperRect.left, y: touches[0].clientY - wrapperRect.top}
+      const point2 = { x: touches[1].clientX - wrapperRect.left, y: touches[1].clientY - wrapperRect.top}
       const distance = getDistance(point1, point2)
       const midPoint = getMidPoint(point1, point2)
       const newScale = Math.min(

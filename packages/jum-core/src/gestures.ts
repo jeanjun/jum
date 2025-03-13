@@ -31,7 +31,7 @@ export const createGestures = (shared: Shared) => {
   const { options } = shared
   let attached = false
 
-  const { minScale, maxScale } = options
+  const { minScale, maxScale, maxScalebounce } = options
 
   const pinchState = {
     distance: 0,
@@ -175,7 +175,7 @@ export const createGestures = (shared: Shared) => {
       const midPoint = getMidPoint(point1, point2)
       const newScale = Math.min(
         pinchState.initialCamera.scale * (distance / pinchState.distance),
-        maxScale + 1.4
+        maxScale + maxScalebounce
       )
       const newX = midPoint.x - newScale * pinchState.relativePoint.x
       const newY = midPoint.y - newScale * pinchState.relativePoint.y

@@ -12,15 +12,15 @@ const createObject = <T extends object, P extends object>(
   Object.create(proto, Object.getOwnPropertyDescriptors(props))
 )
 
-const createWrapper = (child: HTMLElement) => {
+const createWrapper = (element: HTMLElement) => {
   const wrapper = document.createElement('div')
   wrapper.classList.add('jum-wrapper')
 
-  if (child.parentNode) {
-    child.parentNode.insertBefore(wrapper, child)
+  if (element.parentNode) {
+    element.parentNode.insertBefore(wrapper, element)
   }
 
-  wrapper.appendChild(child)
+  wrapper.appendChild(element)
 
   return wrapper
 }
@@ -37,7 +37,8 @@ export const jum = (
     y: 0,
     scale: 1,
     minScale: 1,
-    maxScale: 4,
+    maxScale: 1,
+    maxScalebounce: 2,
     onZoomStart: () => {},
     onZoomUpdate: () => {},
     onZoomEnd: () => {}
@@ -58,8 +59,10 @@ export const jum = (
     }
   }))
 
+  // initialize
   const { x, y, scale } = shared.options
   instance.transform({ x, y, scale })
   instance.attach()
+
   return instance
 }

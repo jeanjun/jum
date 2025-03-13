@@ -1,0 +1,23 @@
+---
+title: Pan
+description: "Persistent Zoom with Panning"
+---
+
+import { Wrapper } from '@/components/preview/wrapper'
+import { Jum } from '@/components/preview/lazy'
+
+<Wrapper className="relative z-10 p-0 overflow-hidden">
+  <Jum maxScale={3}>
+    <img src="/pan.jpg" className="!my-0 rounded-lg" />
+  </Jum>
+</Wrapper>
+
+```tsx
+import { Jum } from 'jum-react'
+
+<div className="overflow-hidden">
+  <Jum maxScale={3}>
+    <img src="image.jpg" alt="" />
+  </Jum>
+</div>
+```

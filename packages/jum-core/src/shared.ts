@@ -25,6 +25,7 @@ export namespace JumEvents {
 export type JumOptions = {
   minScale: number
   maxScale: number
+  maxScalebounce: number
   x: number 
   y: number
   scale: number

@@ -1,18 +1,28 @@
 
 import type { Shared } from '../shared'
 
-export const destroy = (shared: Shared) => () => {
-  const destroy = (obj: Record<string, any>) => {
-    Object.keys(obj).forEach((key) => {
-      const item = obj[key]
-      if (item instanceof HTMLElement) {
-        item.remove()
-      }
-      obj[key] = null
-    })
+const removeWrapper = (wrapper: HTMLElement, element: HTMLElement) => {
+  if (wrapper.parentNode) {
+    wrapper.parentNode.insertBefore(element, wrapper)
+    wrapper.parentNode.removeChild(wrapper)
   }
 
-  const instance = shared.instance
-  destroy(shared)
-  destroy(instance)
+  return element
+}
+
+export const destroy = (shared: Shared) => () => {
+  // remove event listeners
+  shared.instance.detach()
+  // remove wrapper
+  const { wrapper, element } = shared
+  wrapper.parentNode?.insertBefore(element, wrapper)
+  wrapper.parentNode?.removeChild(wrapper)
+  // reset shared
+  shared.instance = null as any
+  shared.wrapper = null as any
+  shared.element = null as any
+  shared.camera = null as any
+  shared.options = null as any
+  shared.isZooming = null as any
+  shared.isAnimating = null as any
 }

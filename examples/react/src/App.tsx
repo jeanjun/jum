@@ -2,18 +2,16 @@ import { Jum } from 'jum-react'
 
 const App = () => {
   return (
-    <div className="app">
+    <div className="app" style={{ height: '100vh'}}>
       <p>&nbsp;</p>
       <p>&nbsp;</p>
       <p>&nbsp;</p>
       <p>&nbsp;</p>
       <p>&nbsp;</p>
       <p>&nbsp;</p>
-      <div style={{ overflow: 'hidden' }}>
-        <Jum>
-          <img src="/images/sample.webp" alt="" />
-        </Jum>
-      </div>
+      <Jum>
+        <img src="/images/sample.webp" alt="" />
+      </Jum>
     </div>
   )
 }

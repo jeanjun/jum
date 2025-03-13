@@ -6,9 +6,9 @@ description: "Basic Usage of Jum"
 import { Wrapper } from '@/components/preview/wrapper'
 import { Jum } from '@/components/preview/lazy'
 
-<Wrapper className="overflow-hidden p-0">
+<Wrapper className="relative z-10 p-0">
   <Jum>
-    <img src="/default.jpg" className="!my-0 !mx-0 !py-0 !px-0 !align-top" />
+    <img src="/default.jpg" className="!my-0 rounded-lg" />
   </Jum>
 </Wrapper>
 
@@ -16,6 +16,6 @@ import { Jum } from '@/components/preview/lazy'
 import { Jum } from 'jum-react'
 
 <Jum>
-  <img src="image.webp" alt="" />
+  <img src="image.jpg" alt="" />
 </Jum>
 ```

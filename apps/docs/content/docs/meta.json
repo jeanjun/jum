@@ -8,6 +8,7 @@
     "commands",
     "---Examples---",
     "default",
-    "Pan"
+    "Pan",
+    "Swipe"
   ]
 }
